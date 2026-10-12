@@ -1,6 +1,6 @@
 # Harmonogram komór
 
-Aplikacja na Androida dla obsługi baterii koksowniczej. Robisz zdjęcie tabeli
+Aplikacja na Androida (Java) dla obsługi baterii koksowniczej. Robisz zdjęcie tabeli
 „Raport Obsługi Komór” (ekran *Zmianowy Raport Obsługi Komór*), a aplikacja:
 
 1. **Rozpoznaje tabelę** (OCR offline – Google ML Kit) i wyciąga z niej **numer komory** oraz
@@ -39,9 +39,9 @@ APK: `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Struktura
 
-- `ocr/ScheduleParser.kt` – logika wyciągania (komora, godzina) z wyniku OCR (testy w `app/src/test`).
-- `ocr/TableRecognizer.kt` – uruchomienie ML Kit na zdjęciu.
-- `ScheduleStore.kt` – zapis harmonogramu i stanu wypchnięć.
-- `NotificationHelper.kt`, `PushReceiver.kt` – powiadomienie z przyciskami.
-- `ScheduleWidgetProvider.kt` – widżet ekranu głównego.
-- `MainActivity.kt` – ekran z tabelą.
+- `ocr/ScheduleParser.java` – logika wyciągania (komora, godzina) z wyniku OCR (testy w `app/src/test`).
+- `ocr/TableRecognizer.java` – uruchomienie ML Kit na zdjęciu.
+- `Schedule.java`, `Chamber.java`, `ScheduleStore.java` – zapis harmonogramu i stanu wypchnięć.
+- `NotificationHelper.java`, `PushReceiver.java` – powiadomienie z przyciskami.
+- `ScheduleWidgetProvider.java` – widżet ekranu głównego.
+- `MainActivity.java` – ekran z tabelą.
