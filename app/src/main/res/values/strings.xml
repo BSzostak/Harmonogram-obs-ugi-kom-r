@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Harmonogram komór</string>
+    <string name="widget_name">Najbliższe komory</string>
+    <string name="widget_description">Trzy najbliższe komory do wypchnięcia</string>
+    <string name="channel_name">Następna komora</string>
+    <string name="channel_description">Stałe powiadomienie z następną komorą do wypchnięcia</string>
+    <string name="take_photo">Zrób zdjęcie</string>
+    <string name="pick_image">Z galerii</string>
+    <string name="col_lp">Lp.</string>
+    <string name="col_chamber">Nr komory</string>
+    <string name="col_plan">Plan. wypch.</string>
+    <string name="col_done">Wypchnięto</string>
+    <string name="action_pushed">Wypchnięto</string>
+    <string name="action_undo">Cofnij</string>
+    <string name="menu_add">Dodaj komorę</string>
+    <string name="menu_undo">Cofnij ostatnie wypchnięcie</string>
+    <string name="menu_reset">Odznacz wszystkie</string>
+    <string name="menu_clear">Wyczyść harmonogram</string>
+    <string name="empty_schedule">Brak harmonogramu.\nZrób zdjęcie tabeli „Raport Obsługi Komór” albo wybierz je z galerii.</string>
+    <string name="widget_empty">Brak komór</string>
+    <string name="widget_title">Następne komory</string>
+    <string name="hint_chamber">Nr komory</string>
+    <string name="hint_time">Planowana godz. wypychu (np. 6:10)</string>
+</resources>
