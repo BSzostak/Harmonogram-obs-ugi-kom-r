@@ -2,6 +2,8 @@ package pl.koksownia.harmonogram;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CrashLog.install(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         int pad = Math.round(12 * getResources().getDisplayMetrics().density);
         setContentView(binding.getRoot());
@@ -108,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.txtDate.setOnClickListener(v -> pickDate());
 
+        showLastCrash();
         NotificationHelper.ensureChannel(this);
         if (Build.VERSION.SDK_INT >= 33 && !NotificationHelper.canNotify(this)) {
             requestNotifications.launch(Manifest.permission.POST_NOTIFICATIONS);
@@ -168,9 +172,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(Throwable e) {
                 setBusy(false, null);
-                toast("Błąd rozpoznawania: " + e.getMessage());
+                String msg = e instanceof OutOfMemoryError
+                        ? "Za mało pamięci na to zdjęcie – spróbuj zrzutu ekranu albo mniejszego zdjęcia."
+                        : "Błąd rozpoznawania: " + e;
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Nie udało się odczytać zdjęcia")
+                        .setMessage(msg)
+                        .setPositiveButton("OK", null)
+                        .show();
             }
         });
     }
@@ -328,6 +339,22 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton("Tak", (d, w) -> action.run())
                 .setNegativeButton("Nie", null)
+                .show();
+    }
+
+    /** Jeśli aplikacja się wcześniej zamknęła z błędem – pokaż jego treść z możliwością skopiowania. */
+    private void showLastCrash() {
+        String crash = CrashLog.take(this);
+        if (crash == null) return;
+        new AlertDialog.Builder(this)
+                .setTitle("Aplikacja zamknęła się z błędem")
+                .setMessage(crash.length() > 3000 ? crash.substring(0, 3000) + "…" : crash)
+                .setPositiveButton("Kopiuj", (d, w) -> {
+                    ClipboardManager cm = getSystemService(ClipboardManager.class);
+                    cm.setPrimaryClip(ClipData.newPlainText("Błąd", crash));
+                    toast("Skopiowano – wklej to w wiadomości do autora");
+                })
+                .setNegativeButton("Zamknij", null)
                 .show();
     }
 
