@@ -23,17 +23,21 @@ public final class CrashLog {
         Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((thread, e) -> {
             try {
-                StringWriter sw = new StringWriter();
-                e.printStackTrace(new PrintWriter(sw));
-                String text = "Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + "), "
-                        + Build.MANUFACTURER + " " + Build.MODEL + ", wersja " + BuildConfigInfo.version(app)
-                        + "\n\n" + sw;
-                prefs(app).edit().putString(KEY, text).commit();
+                prefs(app).edit().putString(KEY, describe(app, e)).commit();
             } catch (Throwable ignored) {
                 // zapis błędu nie może sam wywołać kolejnego błędu
             }
             if (previous != null) previous.uncaughtException(thread, e);
         });
+    }
+
+    /** Opis błędu z urządzeniem, wersją aplikacji i pełnym stosem wywołań (z przyczynami). */
+    public static String describe(Context context, Throwable e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return "Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + "), "
+                + Build.MANUFACTURER + " " + Build.MODEL + ", wersja " + BuildConfigInfo.version(context)
+                + "\n\n" + sw;
     }
 
     /** Zwraca i usuwa zapisany błąd albo null. */

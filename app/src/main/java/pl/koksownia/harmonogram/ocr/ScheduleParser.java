@@ -18,12 +18,13 @@ import java.util.regex.Pattern;
  */
 public final class ScheduleParser {
 
-    private static final Pattern TIME = Pattern.compile("^(\\d{1,2})[:.;,](\\d{2})$");
+    // Uwaga: na Androidzie (ICU) klasa znaków nie może zaczynać się od „[:” – to składnia [:alpha:].
+    private static final Pattern TIME = Pattern.compile("^(\\d{1,2})[.:;,](\\d{2})$");
     private static final Pattern COMPACT_TIME = Pattern.compile("^(\\d{1,2})(\\d{2})$");
     private static final Pattern CHAMBER = Pattern.compile("^\\d{3}$");
     private static final Pattern DATE = Pattern.compile("(20\\d{2})-(\\d{1,2})-(\\d{1,2})");
     private static final Pattern LINE_ROW =
-            Pattern.compile("(?<![\\d:.])(\\d{3})\\s+(\\d{1,2})[:.](\\d{2})(?![\\d:])");
+            Pattern.compile("(?<![\\d:.])(\\d{3})\\s+(\\d{1,2})[.:](\\d{2})(?![\\d:])");
 
     private ScheduleParser() {
     }

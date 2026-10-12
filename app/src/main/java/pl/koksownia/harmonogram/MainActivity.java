@@ -174,14 +174,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(Throwable e) {
                 setBusy(false, null);
-                String msg = e instanceof OutOfMemoryError
-                        ? "Za mało pamięci na to zdjęcie – spróbuj zrzutu ekranu albo mniejszego zdjęcia."
-                        : "Błąd rozpoznawania: " + e;
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Nie udało się odczytać zdjęcia")
-                        .setMessage(msg)
-                        .setPositiveButton("OK", null)
-                        .show();
+                if (e instanceof OutOfMemoryError) {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Nie udało się odczytać zdjęcia")
+                            .setMessage("Za mało pamięci na to zdjęcie – spróbuj zrzutu ekranu albo mniejszego zdjęcia.")
+                            .setPositiveButton("OK", null)
+                            .show();
+                } else {
+                    showError("Nie udało się odczytać zdjęcia", CrashLog.describe(MainActivity.this, e));
+                }
             }
         });
     }
@@ -342,12 +343,16 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Jeśli aplikacja się wcześniej zamknęła z błędem – pokaż jego treść z możliwością skopiowania. */
+    /** Jeśli aplikacja się wcześniej zamknęła z błędem – pokaż jego treść. */
     private void showLastCrash() {
         String crash = CrashLog.take(this);
-        if (crash == null) return;
+        if (crash != null) showError("Aplikacja zamknęła się z błędem", crash);
+    }
+
+    /** Okno z treścią błędu (łącznie z przyczyną) i przyciskiem do skopiowania. */
+    private void showError(String title, String crash) {
         new AlertDialog.Builder(this)
-                .setTitle("Aplikacja zamknęła się z błędem")
+                .setTitle(title)
                 .setMessage(crash.length() > 3000 ? crash.substring(0, 3000) + "…" : crash)
                 .setPositiveButton("Kopiuj", (d, w) -> {
                     ClipboardManager cm = getSystemService(ClipboardManager.class);
