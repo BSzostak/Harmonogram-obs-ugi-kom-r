@@ -17,6 +17,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -74,7 +78,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        int pad = Math.round(12 * getResources().getDisplayMetrics().density);
         setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
+        // Białe ikony na pasku stanu (pod nim jest ceglasty pasek aplikacji).
+        WindowCompat.getInsetsController(getWindow(), binding.getRoot()).setAppearanceLightStatusBars(false);
+        // Od Androida 15 aplikacja rysuje się pod paskami systemowymi – odsuwamy treść o ich wysokość.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root, (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
+                    | WindowInsetsCompat.Type.displayCutout());
+            binding.toolbar.setPadding(bars.left, bars.top, bars.right, 0);
+            binding.content.setPadding(pad + bars.left, pad, pad + bars.right, pad + bars.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         adapter = new ChamberAdapter(this::onRowClicked);
         layoutManager = new LinearLayoutManager(this);
